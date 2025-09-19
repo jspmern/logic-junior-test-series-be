@@ -5,6 +5,8 @@ const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express");
 const options = require('./src/config/swagger');
 const healthRoute=require('./src/routes/health');
+const authRoute=require('./src/routes/auth');
+const errorHandler = require('./src/middleware/errorHandler');
 const PORT=process.env.PORT || 5000;
 const app=express();
 require('dotenv').config();
@@ -18,6 +20,10 @@ app.use(
 );
  
 app.use('/api',healthRoute);
+app.use('/api/auth',authRoute);
+
+app.use(errorHandler)
+
 app.listen(PORT,async()=>{
     try{
         await connectDB();
