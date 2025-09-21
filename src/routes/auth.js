@@ -1,6 +1,6 @@
 const express=require('express');
-const { registerValidationRules } = require('../validator/authValidator');
-const { registerHandler } = require('../middleware/authController');
+const { registerValidationRules, loginValidationRules } = require('../validator/authValidator');
+const { registerHandler, loginHandler } = require('../controller/authController');
  
 
 const router=express.Router();
@@ -171,5 +171,6 @@ const router=express.Router();
  *                         type: string
  */
 router.post("/register", registerValidationRules, registerHandler);
+router.post("/login",loginValidationRules,loginHandler)
 
 module.exports = router;

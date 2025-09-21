@@ -71,4 +71,45 @@ const createUserResponse = (user) => {
         updatedAt: user.updatedAt
     };
 };
-module.exports = { prepareUserData ,validateUserData, hashPassword ,createUserResponse};
+const validateLoginCredentials = async (email, password) => {
+    const errors = [];
+
+    if (!email || !password) {
+        errors.push('Email and password are required');
+        return errors;
+    }
+    return errors;
+};
+const comparePassword=async (plainPassword, hashedPassword) => {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+};
+const generateAccessToken=(userId, email)=>{
+ const payload = {
+        userId,
+        email,
+        type: 'access'
+    };
+    const secret = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET || 'utsavkumarjhaformindia';
+    const options = {
+        expiresIn: '15m'  
+    };
+    return jwt.sign(payload, secret, options);
+}
+const generateRefreshToken=(userId, email)=>{
+  const payload = {
+        userId,
+        email,
+        type: 'refresh'
+    };
+    const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'utsavkumarjhaformindia';
+    const options = {
+        expiresIn: '7d'
+    };
+    return jwt.sign(payload, secret, options);
+}
+const generateTokens = (userId, email) => {
+    const accessToken = generateAccessToken(userId, email);
+    const refreshToken = generateRefreshToken(userId, email);
+    return { accessToken, refreshToken };
+};
+module.exports = { prepareUserData ,validateUserData, hashPassword ,createUserResponse,validateLoginCredentials,comparePassword,generateTokens};
