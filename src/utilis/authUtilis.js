@@ -1,4 +1,5 @@
 const bcrypt = require( 'bcryptjs');
+const jwt = require('jsonwebtoken');
 const prepareUserData = (reqBody) => {
     const {
         firstName,
@@ -68,7 +69,9 @@ const createUserResponse = (user) => {
         about: user.about,
         hobbies: user.hobbies,
         createdAt: user.createdAt,
-        updatedAt: user.updatedAt
+        updatedAt: user.updatedAt,
+        isGoogle: user.isGoogle || false,
+        googleId: user.googleId || ''
     };
 };
 const validateLoginCredentials = async (email, password) => {

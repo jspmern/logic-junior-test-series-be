@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema({
     age: {
         type: Number,
         required: [true, 'Age is required'],
-        min: [18, 'Age must be at least 18'],
         max: [120, 'Age cannot exceed 120']
     },
     email: {
@@ -37,12 +36,21 @@ const userSchema = new mongoose.Schema({
         trim: true,
         match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address']
     },
-    password: {
-        type: String,
-        required: [true, 'Password is required'],
-        minlength: [8, 'Password must be at least 8 characters long'],
-        maxlength: [128, 'Password cannot exceed 128 characters'],
+   password: {
+  type: String,
+  required: function () {
+    return !this.isGoogle;  // required only if not Google
+  },
+  validate: {
+    validator: function (v) {
+      if (this.isGoogle) return true;
+      // else enforce min length
+      return v && v.length >= 8;
     },
+    message: 'Password must be at least 8 characters long'
+  },
+  maxlength: [128, 'Password cannot exceed 128 characters']
+},
     gender: {
         type: String,
         required: [true, 'Gender is required'],
@@ -74,6 +82,8 @@ const userSchema = new mongoose.Schema({
             message: 'Cannot have more than 20 hobbies'
         }
     },
+     isGoogle: { type: Boolean, default: false },
+     googleId: { type: String, default: '' },
     refreshToken: {
         type: String,
         default: null
@@ -104,6 +114,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 // Add indexes for performance
-userSchema.index({ email: 1 }); // Unique index on email
+userSchema.index({  email: { type: String, unique: true, required: true } }); // Unique index on email
 userSchema.index({ firstName: 1, lastName: 1 });
 module.exports = mongoose.model('User', userSchema);
