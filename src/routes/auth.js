@@ -1,6 +1,6 @@
 const express=require('express');
-const { registerValidationRules, loginValidationRules } = require('../validator/authValidator');
-const { registerHandler, loginHandler,redirectToGoogle,handleGoogleCallback } = require('../controller/authController');
+const { registerValidationRules, loginValidationRules, forgetPasswordValidationRule, resetValidationRule } = require('../validator/authValidator');
+const { registerHandler, loginHandler,redirectToGoogle,handleGoogleCallback, forgetPasswordHandler, resetPasswordHandler } = require('../controller/authController');
  
 
 const router=express.Router();
@@ -267,9 +267,9 @@ const router=express.Router();
  *                   example: Invalid email or password
  */
 router.post("/register", registerValidationRules, registerHandler);
-
 router.post("/login",loginValidationRules,loginHandler)
 router.get('/google',redirectToGoogle);
 router.get('/google/callback', handleGoogleCallback);
-
+router.post('/forget-password',forgetPasswordValidationRule, forgetPasswordHandler);
+router.post('/reset-password/:token',resetValidationRule, resetPasswordHandler);
 module.exports = router;

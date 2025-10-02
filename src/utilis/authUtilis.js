@@ -1,4 +1,5 @@
 const bcrypt = require( 'bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const prepareUserData = (reqBody) => {
     const {
@@ -20,7 +21,7 @@ const prepareUserData = (reqBody) => {
         lastName: lastName.trim(),
         age: parseInt(age, 10),
         email: email.toLowerCase().trim(),
-        password: password, // Will be hashed separately
+        password: password,  
         gender: gender.toLowerCase(),
         isPremium: isPremium || false,
         photoUrl: photoUrl || undefined,
@@ -115,4 +116,11 @@ const generateTokens = (userId, email) => {
     const refreshToken = generateRefreshToken(userId, email);
     return { accessToken, refreshToken };
 };
-module.exports = { prepareUserData ,validateUserData, hashPassword ,createUserResponse,validateLoginCredentials,comparePassword,generateTokens};
+// Generate secure random token for reset password
+const generateResetToken = () => {
+    const token = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const expiresAt = Date.now() + 15 * 60 * 1000; // 15 mins
+    return { token, hashedToken, expiresAt };
+};
+module.exports = { prepareUserData ,validateUserData, hashPassword ,createUserResponse,validateLoginCredentials,comparePassword,generateTokens,generateResetToken};

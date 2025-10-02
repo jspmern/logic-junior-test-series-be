@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body,param } = require('express-validator');
 
 const registerValidationRules = [
     body('firstName')
@@ -80,4 +80,31 @@ const loginValidationRules = [
         .isLength({ min: 8 })
         .withMessage('Password must be at least 8 characters long')
 ];
-module.exports={registerValidationRules,loginValidationRules};
+const forgetPasswordValidationRule=[
+    body('email')
+        .isEmail()
+        .withMessage('Please provide a valid email address'),
+        body('captchaToken') 
+        .notEmpty()
+        .withMessage('Captcha token is required')
+
+];
+const resetValidationRule = [
+    param('token')
+        .notEmpty()
+        .withMessage('Reset token is required')
+        .isString()
+        .withMessage('Reset token must be a string'),
+        
+    body('email')
+        .isEmail()
+        .withMessage('Valid email is required')
+        .normalizeEmail(),
+        
+    body('newPassword')
+        .isLength({ min: 8 })
+        .withMessage('Password must be at least 8 characters long')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+        .withMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
+];
+module.exports={registerValidationRules,loginValidationRules,forgetPasswordValidationRule,resetValidationRule};
