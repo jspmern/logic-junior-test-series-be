@@ -13,13 +13,7 @@ const {
 } = require("../utilis/authUtilis");
 const user = require("../models/user");
 const { sendResetPasswordEmail } = require("../utilis/emailutils");
-const client = new OAuth2Client({
-  clientId:
-    "438068886409-db51m54rujs0gg0698eoh4si8b0qtu1l.apps.googleusercontent.com",
-  clientSecret: "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",
-  redirectUri: "http://localhost:5000/api/auth/google/callback",
-});
-
+const client = require('../config/OAuth2');
 const redirectToGoogle = (req, res) => {
   const scope = ["openid", "profile", "email"];
   const authorizeUrl = client.generateAuthUrl({
