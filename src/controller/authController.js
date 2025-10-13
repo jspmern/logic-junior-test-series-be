@@ -1,5 +1,4 @@
-const axios = require("axios");
-const { OAuth2Client } = require("google-auth-library");
+
 const { validationResult } = require("express-validator");
 const {
   prepareUserData,
@@ -20,7 +19,7 @@ const redirectToGoogle = (req, res) => {
     access_type: "offline",
     prompt: "consent",
     scope: scope,
-    redirect_uri: "http://localhost:5000/api/auth/google/callback",
+    redirect_uri: process.env.GOOGLE_REDIRECT_URI || "http://localhost:5000/api/auth/google/callback",
   });
   res.redirect(authorizeUrl);
 };
@@ -33,8 +32,7 @@ const handleGoogleCallback = async (req, res, next) => {
     const { tokens } = await client.getToken(code);
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
-      audience:
-        "438068886409-db51m54rujs0gg0698eoh4si8b0qtu1l.apps.googleusercontent.com",
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     const {
