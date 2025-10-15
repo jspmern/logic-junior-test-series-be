@@ -53,7 +53,12 @@ const updateCategoryHandler=async(req,res,next)=>{
           error.errors = additionalErrors;
           return next(error);
       }
-        let updateCategoryData=await Category.findByIdAndUpdate(cat_id,{$set:categoryData},{new:true});
+      
+      if (categoryData.name) {
+          categoryData.slug = categoryData.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
+      }
+      
+      let updateCategoryData=await Category.findByIdAndUpdate(cat_id,{$set:categoryData},{new:true});
         if(!updateCategoryData){
             const error=new Error("Category not found");
             error.status=404;
