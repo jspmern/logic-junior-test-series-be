@@ -8,6 +8,7 @@ const options = require('./src/config/swagger');
 const healthRoute=require('./src/routes/health');
 const authRoute=require('./src/routes/auth');
 const categoryRoute=require('./src/routes/categories');
+const courseRoute=require('./src/routes/courses');
 const errorHandler = require('./src/middleware/errorHandler');
 const PORT=process.env.PORT || 5000;
 const app=express();
@@ -23,6 +24,7 @@ app.use(
 app.use('/api',healthRoute);
 app.use('/api/auth',authRoute);
 app.use('/api/categories',categoryRoute);
+app.use('/api/courses',courseRoute);
 
 app.use(errorHandler)
 
