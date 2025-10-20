@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const courseSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, unique: true, trim: true },
-    description: { type: String, trim: true },
-    thumbnail: { type: String, trim: true },
-    category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+    description: { type: String, trim: true ,required:true},
+    thumbnail: { type: String, trim: true ,require:true},
+    category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category',required:true }],
     isPaid: { type: Boolean, default: false },
     price: {
       type: Number,

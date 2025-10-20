@@ -1,4 +1,6 @@
+const { validationResult } = require("express-validator");
 const Course = require("../models/Course");
+const { validateCourseData, prepareCourseData } = require("../utilis/courseUtils");
 
  
  const getAllCourseController=async(req,res,next)=>{
@@ -11,9 +13,42 @@ const Course = require("../models/Course");
     }
  }
  const createCourseController=async(req,res,next)=>{
-    try{}
+    try{
+         const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          const error = new Error("Validation failed");
+          error.status = 400;
+          error.errors = errors.array();
+          return next(error);
+        }
+        const courseData = prepareCourseData(req.body);
+         const additionalErrors = validateCourseData(courseData);
+            if (additionalErrors.length > 0) {
+              const error = new Error("Validation failed");
+              error.status = 400;
+              error.errors = additionalErrors;
+              return next(error);
+            }
+          const newCourse = new Course(courseData);
+        await newCourse.save();
+        res.status(201).json({success:true,message:"Course created successfully",data:newCourse});
+    }
     catch(error){
        return next(error);
+    }
+ }
+ const uploadThumbnailController=async(req,res,next)=>{
+   //TODO: implement upload logic for cloudary or s3
+    try{
+        if (!req.file) return res.status(400).json({ message: "Thumbnail is required" });
+        const imagePath = `/uploads/courses/${req.file.filename}`;
+             const proto = req.get('x-forwarded-proto') || req.protocol;
+                const host = req.get('host');
+        const fullUrl = `${proto}://${host}${imagePath}`;
+        res.status(200).json({ success: true, message: "Thumbnail uploaded successfully", data: { thumbnail: fullUrl } });
+    }
+    catch(error){
+      return  next(error);
     }
  }
  const getCourseByIdController=async(req,res,next)=>{
@@ -39,5 +74,6 @@ const Course = require("../models/Course");
     createCourseController,
     getCourseByIdController,
     updateCourseController,
-    deleteCourseController
+    deleteCourseController,
+    uploadThumbnailController
  }

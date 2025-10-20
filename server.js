@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express=require('express');
 const connectDB=require('./src/config/db')
 const morgan=require('morgan');
@@ -12,8 +13,16 @@ const courseRoute=require('./src/routes/courses');
 const errorHandler = require('./src/middleware/errorHandler');
 const PORT=process.env.PORT || 5000;
 const app=express();
-app.use(morgan('dev'));
 app.use(express.json());
+app.set('trust proxy', true);
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, 'public', 'uploads'), {
+    dotfiles: 'ignore',
+    maxAge: '1d',
+    index: false,
+  })
+);
 const specs = swaggerJsdoc(options);
 app.use(
   "/api-docs",
