@@ -40,36 +40,39 @@ function buildCacheKey(req, prefix = "") {
   return key;
 }
 
-async function clearCacheByPrefix(prefix) {
+ async function clearCacheByPrefix(prefix) {
   try {
     if (!prefix) return;
-    const pattern = `${prefix}*`; // e.g. "courses*"
+    const pattern = `${prefix}*`;
 
-    // Use SCAN to find keys in batches (safer than KEYS)
-    let cursor = 0;
+    let cursor = '0'; // must be string
+
     do {
       const reply = await client.scan(cursor, {
         MATCH: pattern,
         COUNT: 100,
       });
 
-      cursor = reply.cursor;
-      const keys = reply.keys;
+      cursor = reply.cursor; // string, correct
+
+      const keys = reply.keys.filter((k) => typeof k === 'string'); // ensure all strings
 
       if (keys.length > 0) {
-        await client.del(keys);
+        await client.del(...keys); // spread array
         console.log(`🧹 Cleared cache keys: ${keys.join(", ")}`);
       }
-    } while (cursor !== 0);
+    } while (cursor !== '0');
   } catch (error) {
     console.error("❌ Failed to clear cache:", error);
   }
 }
 
+
 /**
  * Delete one specific key (optional helper)
  */
-async function clearCacheKey(key) {
+ async function clearCacheKey(key) {
+  if (!key || typeof key !== 'string') return;
   try {
     await client.del(key);
     console.log(`🗑️ Cache key deleted: ${key}`);
@@ -77,5 +80,6 @@ async function clearCacheKey(key) {
     console.error("❌ Error deleting cache key:", error);
   }
 }
+
 
 module.exports = { buildCacheKey,clearCacheByPrefix, clearCacheKey };
