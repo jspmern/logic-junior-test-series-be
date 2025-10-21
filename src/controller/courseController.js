@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const { validateCourseData, prepareCourseData } = require("../utilis/courseUtils");
 const client = require("../config/redisClient");
+const { clearCacheByPrefix } = require("../utilis/cacheKey");
 
  
  const getAllCourseController=async(req,res,next)=>{
@@ -41,6 +42,7 @@ const client = require("../config/redisClient");
             }
           const newCourse = new Course(courseData);
         await newCourse.save();
+         await clearCacheByPrefix("courses");
         res.status(201).json({success:true,message:"Course created successfully",data:newCourse});
     }
     catch(error){

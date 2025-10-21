@@ -1,4 +1,4 @@
-// utils/cacheKey.js
+const client = require("../config/redisClient");
 
 /**
  * Build a unique cache key based on:
@@ -40,4 +40,42 @@ function buildCacheKey(req, prefix = "") {
   return key;
 }
 
-module.exports = { buildCacheKey };
+async function clearCacheByPrefix(prefix) {
+  try {
+    if (!prefix) return;
+    const pattern = `${prefix}*`; // e.g. "courses*"
+
+    // Use SCAN to find keys in batches (safer than KEYS)
+    let cursor = 0;
+    do {
+      const reply = await client.scan(cursor, {
+        MATCH: pattern,
+        COUNT: 100,
+      });
+
+      cursor = reply.cursor;
+      const keys = reply.keys;
+
+      if (keys.length > 0) {
+        await client.del(keys);
+        console.log(`🧹 Cleared cache keys: ${keys.join(", ")}`);
+      }
+    } while (cursor !== 0);
+  } catch (error) {
+    console.error("❌ Failed to clear cache:", error);
+  }
+}
+
+/**
+ * Delete one specific key (optional helper)
+ */
+async function clearCacheKey(key) {
+  try {
+    await client.del(key);
+    console.log(`🗑️ Cache key deleted: ${key}`);
+  } catch (error) {
+    console.error("❌ Error deleting cache key:", error);
+  }
+}
+
+module.exports = { buildCacheKey,clearCacheByPrefix, clearCacheKey };
