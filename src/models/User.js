@@ -86,6 +86,12 @@ const userSchema = new mongoose.Schema({
      googleId: { type: String, default: '' },
      passwordResetToken: { type: String },
      passwordResetExpires: { type: Date },
+     purchasedCourses: [
+      {
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        purchaseDate: { type: Date, default: Date.now },
+      },
+    ],
     refreshToken: {
         type: String,
         default: null
