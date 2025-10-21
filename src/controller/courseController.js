@@ -1,11 +1,21 @@
 const { validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const { validateCourseData, prepareCourseData } = require("../utilis/courseUtils");
+const client = require("../config/redisClient");
 
  
  const getAllCourseController=async(req,res,next)=>{
     try{
         const course=await Course.find({}).populate('category').populate('author','name email').sort({createdAt:-1});
+            // Save result to cache (only if cache middleware set the key)
+    if (res.locals.cacheKey) {
+      await client.setEx(
+        res.locals.cacheKey,
+        res.locals.expiry,
+        JSON.stringify(course)
+      );
+      console.log("🗄️ Data saved to Redis cache:", res.locals.cacheKey);
+    }
         res.status(200).json({success:true,message:"All courses fetched successfully",data:course,total:course.length})
     }
     catch(error){
