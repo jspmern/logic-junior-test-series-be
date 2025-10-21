@@ -75,6 +75,29 @@ router.get('/',cache('courses'),getAllCourseController);
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CourseInput'
+ *           examples:
+ *             minimal:
+ *               summary: Minimal required fields
+ *               value:
+ *                 title: "Basic Logic Course"
+ *                 description: "An introductory logic course for juniors"
+ *                 category: "64a7b2f9e4b0f2a5d8c3f1a2"
+ *                 author: "64a7b2f9e4b0f2a5d8c3f1b3"
+ *                 isPaid: false
+ *             full:
+ *               summary: Full payload with optional fields
+ *               value:
+ *                 title: "Advanced Logic Course"
+ *                 description: "A deeper dive into logical reasoning and puzzles"
+ *                 category: "64a7b2f9e4b0f2a5d8c3f1a2"
+ *                 author: "64a7b2f9e4b0f2a5d8c3f1b3"
+ *                 isPaid: true
+ *                 price: 19.99
+ *                 duration: "4 weeks"
+ *                 totalMarks: 100
+ *                 totalQuestions: 50
+ *                 isPublished: false
+ *                 thumbnail: "https://example.com/uploads/courses/sample.jpg"
  *     responses:
  *       201:
  *         description: Course created successfully
@@ -85,12 +108,43 @@ router.get('/',cache('courses'),getAllCourseController);
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Course created successfully"
  *                 data:
  *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     description:
+ *                       type: string
  *       400:
  *         description: Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                       param:
+ *                         type: string
+ *                       location:
+ *                         type: string
  */
 router.post('/',createCoureseValidationRule,createCourseController);
 
