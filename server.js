@@ -14,6 +14,7 @@ const errorHandler = require('./src/middleware/errorHandler');
 const PORT=process.env.PORT || 5000;
 const app=express();
 app.use(express.json());
+app.use(morgan('dev'));
 app.set('trust proxy', true);
 app.use(
   '/uploads',
