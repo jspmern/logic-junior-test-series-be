@@ -10,6 +10,7 @@ const healthRoute=require('./src/routes/health');
 const authRoute=require('./src/routes/auth');
 const categoryRoute=require('./src/routes/categories');
 const courseRoute=require('./src/routes/courses');
+const questionRoute=require('./src/routes/question');
 const errorHandler = require('./src/middleware/errorHandler');
 const PORT=process.env.PORT || 5000;
 const app=express();
@@ -35,6 +36,7 @@ app.use('/api',healthRoute);
 app.use('/api/auth',authRoute);
 app.use('/api/categories',categoryRoute);
 app.use('/api/courses',courseRoute);
+app.use('/api/questions',questionRoute);
 
 app.use(errorHandler)
 

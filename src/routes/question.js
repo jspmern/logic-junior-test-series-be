@@ -1,0 +1,13 @@
+const express = require('express');
+const { getAllQuestionController, createQuestionController, getQuestionByIdController, updateQuestionController, deleteQuestionController, uploadQuestionImageController, uploadQuestionOptionController, uploadQuestionExplanationController,} = require('../controller/questionController');
+const router = express.Router();
+const { createQuestionValidationRules, getQuestionValidationRules, updateQuestionValidationRules, deleteQuestionValidationRules } = require('../validator/questionValidator');
+router.get('/',getAllQuestionController);
+router.post('/',createQuestionValidationRules,createQuestionController);
+router.get('/:id',getQuestionValidationRules,getQuestionByIdController);
+router.put('/:id',updateQuestionValidationRules,updateQuestionController);
+router.delete('/:id',deleteQuestionValidationRules,deleteQuestionController);
+router.post('/upload/question-image',uploadQuestionImageController);
+router.post('/upload/question-option',uploadQuestionOptionController);
+router.post('/upload/question-explanation',uploadQuestionExplanationController);
+module.exports = router;
