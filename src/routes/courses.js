@@ -232,8 +232,119 @@ router.get('/',cache('courses'),getAllCourseController);
  */
 router.post('/',createCoureseValidationRule,createCourseController);
 
+/**
+ * @openapi
+ * /api/courses/{id}:
+ *   get:
+ *     summary: Retrieve a course by its id
+ *     tags:
+ *       - Courses
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The course id
+ *     responses:
+ *       200:
+ *         description: Course retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *       404:
+ *         description: Course not found
+ */
 router.get('/:id',getCourseByIdValidationRule,getCourseByIdController);
+
+/**
+ * @openapi
+ * /api/courses/{id}:
+ *   put:
+ *     summary: Update a course by its id
+ *     tags:
+ *       - Courses
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The course id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CourseInput'
+ *     responses:
+ *       200:
+ *         description: Course updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/CourseInput'
+ *       400:
+ *         description: Validation failed
+ *       404:
+ *         description: Course not found
+ */
 router.put('/:id',updateCourseValidationRule,updateCourseController);
+
+/**
+ * @openapi
+ * /api/courses/{id}:
+ *   delete:
+ *     summary: Delete a course by its id
+ *     tags:
+ *       - Courses
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The course id
+ *     responses:
+ *       200:
+ *         description: Course deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Course not found
+ */
 router.delete('/:id',deleteCourseValidationRule,deleteCourseController);
 
 /**
