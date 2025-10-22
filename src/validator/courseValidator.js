@@ -1,4 +1,4 @@
-const { body } = require("express-validator")
+const { body, param } = require("express-validator")
 
  const createCoureseValidationRule =[
     body('title').notEmpty().withMessage('Title is required').isString().withMessage('Title must be a string'),
@@ -13,7 +13,10 @@ const { body } = require("express-validator")
     body('thumbnail').optional().isString().withMessage('Thumbnail must be a string'),
     body('author').notEmpty().withMessage('Author is required').isMongoId().withMessage('Author must be a valid Mongo ID'),
  ]
-const getCourseByIdValidationRule =[]
+const getCourseByIdValidationRule =[
+   param('id').notEmpty().withMessage('Course ID is required').isMongoId().withMessage('Invalid Course ID')
+]
+
 const updateCourseValidationRule =[]
 const deleteCourseValidationRule =[]
 module.exports={createCoureseValidationRule,getCourseByIdValidationRule,updateCourseValidationRule,deleteCourseValidationRule}

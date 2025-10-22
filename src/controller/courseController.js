@@ -64,7 +64,22 @@ const { clearCacheByPrefix } = require("../utilis/cacheKey");
     }
  }
  const getCourseByIdController=async(req,res,next)=>{
-    try{}
+    try{
+      const errors= validationResult(req);
+      if(!errors.isEmpty()){
+        const error=new Error("Validation failed");
+        error.status=400;
+        error.errors=errors.array();
+        return next(error);
+      }
+      const course=await Course.findById(req.params.id).populate('category').populate('author','name email');
+      if(!course){
+        const error=new Error("Course not found");
+        error.status=404;
+        return next(error);
+      }
+      res.status(200).json({success:true,message:"Course fetched successfully",data:course});
+    }
     catch(error){
        return next(error);
     }
