@@ -60,6 +60,90 @@ const router=express.Router();
 /*
 	GET /api/courses
 */
+/**
+ * @openapi
+ * /api/courses:
+ *   get:
+ *     summary: Retrieve a list of courses with optional pagination, filtering and search
+ *     tags:
+ *       - Courses
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Text search against title/description
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by category ObjectId
+ *       - in: query
+ *         name: isPublished
+ *         schema:
+ *           type: boolean
+ *         description: Filter by published status
+ *     responses:
+ *       200:
+ *         description: A paginated list of courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "All courses fetched successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       title:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       category:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                       author:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                       isPublished:
+ *                         type: boolean
+ *                       isPaid:
+ *                         type: boolean
+ *                 total:
+ *                   type: integer
+ *                   example: 42
+ *       400:
+ *         description: Bad request (invalid query params)
+ */
 router.get('/',cache('courses'),getAllCourseController);
 
 /**
@@ -75,6 +159,29 @@ router.get('/',cache('courses'),getAllCourseController);
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CourseInput'
+ *           examples:
+ *             minimal:
+ *               summary: Minimal required fields
+ *               value:
+ *                 title: "Basic Logic Course"
+ *                 description: "An introductory logic course for juniors"
+ *                 category: "64a7b2f9e4b0f2a5d8c3f1a2"
+ *                 author: "64a7b2f9e4b0f2a5d8c3f1b3"
+ *                 isPaid: false
+ *             full:
+ *               summary: Full payload with optional fields
+ *               value:
+ *                 title: "Advanced Logic Course"
+ *                 description: "A deeper dive into logical reasoning and puzzles"
+ *                 category: "64a7b2f9e4b0f2a5d8c3f1a2"
+ *                 author: "64a7b2f9e4b0f2a5d8c3f1b3"
+ *                 isPaid: true
+ *                 price: 19.99
+ *                 duration: "4 weeks"
+ *                 totalMarks: 100
+ *                 totalQuestions: 50
+ *                 isPublished: false
+ *                 thumbnail: "https://example.com/uploads/courses/sample.jpg"
  *     responses:
  *       201:
  *         description: Course created successfully
@@ -85,12 +192,43 @@ router.get('/',cache('courses'),getAllCourseController);
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Course created successfully"
  *                 data:
  *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     description:
+ *                       type: string
  *       400:
  *         description: Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       msg:
+ *                         type: string
+ *                       param:
+ *                         type: string
+ *                       location:
+ *                         type: string
  */
 router.post('/',createCoureseValidationRule,createCourseController);
 
