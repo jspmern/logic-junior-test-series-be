@@ -20,8 +20,8 @@ const createQuestionValidationRules = [
     if (correctCount < 1) throw new Error('At least one option must be marked isCorrect');
     return true;
   }),
-  body('userId').notEmpty().withMessage('User ID is required'),
-  body("courseId").notEmpty().withMessage("Course ID is required"),
+  body('userId').notEmpty().withMessage('User ID is required').isMongoId().withMessage('Invalid User ID'),
+  body("courseId").notEmpty().withMessage("Course ID is required").isMongoId().withMessage("Invalid Course ID"),
   body("tags").optional().isArray().withMessage("Tags must be an array"),
   body("marks").optional().isNumeric().withMessage("Marks must be a number"),
   body("negativeMarks").optional().isNumeric().withMessage("Negative marks must be a number"),
