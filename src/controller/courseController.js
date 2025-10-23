@@ -7,7 +7,7 @@ const { clearCacheByPrefix } = require("../utilis/cacheKey");
  
  const getAllCourseController=async(req,res,next)=>{
     try{
-        const course=await Course.find({}).populate('category').populate('author','name email').sort({createdAt:-1});
+        const course=await Course.find({}).populate('category').populate('author','firstName email').sort({createdAt:-1});
             // Save result to cache (only if cache middleware set the key)
     if (res.locals.cacheKey) {
       await client.setEx(

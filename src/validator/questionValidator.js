@@ -34,10 +34,7 @@ const getQuestionValidationRules = [
   param("id").isMongoId().withMessage("Invalid question ID"),
 ];
 const updateQuestionValidationRules = [
-  param("id").isMongoId().withMessage("Invalid question ID"),
-  body("text").optional().notEmpty().withMessage("Question text cannot be empty"),
-    body("options").optional().isArray({ min: 2 }).withMessage("At least two options are required"),
-    body("correctOption").optional().notEmpty().withMessage("Correct option cannot be empty"),
+  param("id").isMongoId().withMessage("Invalid question ID"), 
 ];
 const deleteQuestionValidationRules = [
   param("id").isMongoId().withMessage("Invalid question ID"),

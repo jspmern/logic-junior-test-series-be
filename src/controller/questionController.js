@@ -10,6 +10,25 @@ const getAllQuestionController = async (req, res, next) => {
 };
 const getQuestionByIdController = async (req, res, next) => {
   try {
+    const errors=validationResult(req);
+    if(!errors.isEmpty()){
+        const error=new Error("Validation failed");
+        error.status=400;
+        error.errors=errors.array();
+        return next(error);
+    }
+    const questionId=req.params.id;
+    const question=await Question.findById(questionId).populate( {
+      path:'courseId',
+      select:'title category',
+      populate:{ path:'category', select:'name' }
+    }).populate('userId',"firstName email");
+    if(!question){
+        const error=new Error("Question not found");
+        error.status=404;
+        return next(error);
+    }
+    res.status(200).json({ success: true, data: question })
   } catch (error) {
     return next(error);
   }
@@ -41,6 +60,61 @@ const createQuestionController = async (req, res, next) => {
 };
 const updateQuestionController = async (req, res, next) => {
   try {
+    const errors=validationResult(req);
+    if(!errors.isEmpty()){
+        const error=new Error("Validation failed");
+        error.status=400;
+        error.errors=errors.array();
+        return next(error);
+    }
+  const questionId=req.params.id;
+  const existingQuestion = await Question.findById(questionId);
+    if (!existingQuestion) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+    const allowedFields = [
+      "questionText",
+      "courseId",
+      "questionImage",
+  "options",
+  "explanation",
+  "difficulty",
+  "marks",
+  "negativeMarks",
+  "tags",
+  "active",
+];
+    
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        let value = req.body[field];
+        if (typeof value === "string") {
+          value = value.trim();
+        } else if (Array.isArray(value) && field === "options") {
+          value = value.map((opt) => ({
+            text: opt.text?.trim() || "",
+            image: opt.image?.trim() || "",
+            isCorrect: !!opt.isCorrect,
+          }));
+        }
+
+        updateData[field] = value;
+      }
+    }
+     const updatedQuestion = await Question.findByIdAndUpdate(
+      questionId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+     return res.status(200).json({
+      success: true,
+      message: "Question updated successfully",
+      data: updatedQuestion,
+    });
   } catch (error) {
     return next(error);
   }

@@ -43,5 +43,7 @@ const questionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+questionSchema.index({ courseId: 1 });
+questionSchema.index({ difficulty: 1 });
 
 module.exports = mongoose.model("Question", questionSchema);
