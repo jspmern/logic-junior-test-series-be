@@ -13,6 +13,11 @@ const questionSchema = new mongoose.Schema(
       ref: "Course",
       required: true,
     },
+    userId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     questionText: { type: String, trim: true },
     questionImage: { type: String, trim: true }, // optional
     options: {
