@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const { prepareQuestionData, validateQuestionData } = require("../utilis/questionUtilis");
+const { prepareQuestionData, validateQuestionData, prepareUpdateQuestionData } = require("../utilis/questionUtilis");
 const Question = require("../models/Question");
 
 const getAllQuestionController = async (req, res, next) => {
@@ -75,36 +75,7 @@ const updateQuestionController = async (req, res, next) => {
         message: "Question not found",
       });
     }
-    const allowedFields = [
-      "questionText",
-      "courseId",
-      "questionImage",
-  "options",
-  "explanation",
-  "difficulty",
-  "marks",
-  "negativeMarks",
-  "tags",
-  "active",
-];
-    
-    const updateData = {};
-    for (const field of allowedFields) {
-      if (req.body[field] !== undefined) {
-        let value = req.body[field];
-        if (typeof value === "string") {
-          value = value.trim();
-        } else if (Array.isArray(value) && field === "options") {
-          value = value.map((opt) => ({
-            text: opt.text?.trim() || "",
-            image: opt.image?.trim() || "",
-            isCorrect: !!opt.isCorrect,
-          }));
-        }
-
-        updateData[field] = value;
-      }
-    }
+      const updateData = prepareUpdateQuestionData(req.body);
      const updatedQuestion = await Question.findByIdAndUpdate(
       questionId,
       { $set: updateData },

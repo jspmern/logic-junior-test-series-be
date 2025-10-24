@@ -91,4 +91,37 @@ const validateQuestionData = (questionData) => {
   }
   return errors.length > 0 ? errors : null;
 }
-module.exports = { prepareQuestionData,validateQuestionData };
+const prepareUpdateQuestionData = (question = {}) => {
+      const allowedFields = [
+      "questionText",
+      "courseId",
+      "questionImage",
+      "options",
+      "explanation",
+      "difficulty",
+      "marks",
+     "negativeMarks",
+     "tags",
+     "active",
+];
+    
+    const updateData = {};
+    for (const field of allowedFields) {
+      if (question[field] !== undefined) {
+        let value = question[field];
+        if (typeof value === "string") {
+          value = value.trim();
+        } else if (Array.isArray(value) && field === "options") {
+          value = value.map((opt) => ({
+            text: opt.text?.trim() || "",
+            image: opt.image?.trim() || "",
+            isCorrect: !!opt.isCorrect,
+          }));
+        }
+
+        updateData[field] = value;
+      }
+    }
+    return updateData;
+}
+module.exports = { prepareQuestionData,validateQuestionData,prepareUpdateQuestionData };
