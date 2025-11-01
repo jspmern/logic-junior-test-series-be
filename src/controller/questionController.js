@@ -4,6 +4,13 @@ const Question = require("../models/Question");
 
 const getAllQuestionController = async (req, res, next) => {
   try {
+    const errors=validationResult(req);
+    if(!errors.isEmpty()){
+        const error=new Error("Validation failed");
+        error.status=400;
+        error.errors=errors.array();
+        return next(error);
+    }
   } catch (error) {
     return next(error);
   }

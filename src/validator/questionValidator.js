@@ -39,9 +39,14 @@ const updateQuestionValidationRules = [
 const deleteQuestionValidationRules = [
   param("id").isMongoId().withMessage("Invalid question ID"),
 ];
+const getSingleQuestionValidationRules = [
+  body("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive integer"),
+  body("limit").optional().isInt({ min: 1 }).withMessage("Limit must be a positive integer"), 
+]
 module.exports = {
   createQuestionValidationRules,
   getQuestionValidationRules,
   updateQuestionValidationRules,
-  deleteQuestionValidationRules
+  deleteQuestionValidationRules,
+  getSingleQuestionValidationRules
 };

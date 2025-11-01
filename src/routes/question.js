@@ -14,6 +14,7 @@ const {
   getQuestionValidationRules,
   updateQuestionValidationRules,
   deleteQuestionValidationRules,
+  getSingleQuestionValidationRules
 } = require('../validator/questionValidator');
 const createUpload = require('../config/multer');
 const router = express.Router();
@@ -21,7 +22,7 @@ const router = express.Router();
 // -------------------------
 //  Default Question Routes
 // -------------------------
-router.get('/', getAllQuestionController);
+router.get('/',getSingleQuestionValidationRules, getAllQuestionController);
 
 router.post('/', createQuestionValidationRules, createQuestionController);
 router.delete('/:id', deleteQuestionValidationRules, deleteQuestionController);
