@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 
 const createQuestionValidationRules = [
  body("questionText").notEmpty().withMessage("Question text is required"),
@@ -40,8 +40,12 @@ const deleteQuestionValidationRules = [
   param("id").isMongoId().withMessage("Invalid question ID"),
 ];
 const getSingleQuestionValidationRules = [
-  body("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive integer"),
-  body("limit").optional().isInt({ min: 1 }).withMessage("Limit must be a positive integer"), 
+  query("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive integer"),
+  query("limit").optional().isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
+  query("search").optional().isString().withMessage("Search must be a string"),
+  query("courseId").isMongoId().withMessage("Invalid Course ID"),
+  query("isPaid").optional().isBoolean().withMessage("isPaid must be a boolean"),
+  query("sortBy").optional().isIn(["latest", "oldest", "mostPopular"]).withMessage("Invalid sort option"),
 ]
 module.exports = {
   createQuestionValidationRules,

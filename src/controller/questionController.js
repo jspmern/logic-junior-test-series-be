@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const { prepareQuestionData, validateQuestionData, prepareUpdateQuestionData } = require("../utilis/questionUtilis");
 const Question = require("../models/Question");
+const { getQuestionsByCourseIdService } = require("../services/questionServices");
 
 const getAllQuestionController = async (req, res, next) => {
   try {
@@ -11,6 +12,16 @@ const getAllQuestionController = async (req, res, next) => {
         error.errors=errors.array();
         return next(error);
     }
+  const { courseId } = req.query;
+    if (!courseId) {
+      return res.status(400).json({ success: false, message: "courseId is required" });
+    }
+    const result = await getQuestionsByCourseIdService(req.query);
+
+    res.status(200).json({
+      success: true,
+      ...result,
+    }); 
   } catch (error) {
     return next(error);
   }
@@ -99,6 +110,26 @@ const updateQuestionController = async (req, res, next) => {
 };
 const deleteQuestionController = async (req, res, next) => {
   try {
+    const errors=validationResult(req);
+    if(!errors.isEmpty()){
+        const error=new Error("Validation failed");
+        error.status=400;
+        error.errors=errors.array();
+        return next(error);
+    }
+    const questionId=req.params.id;
+    const existingQuestion = await Question.findById(questionId);
+    if (!existingQuestion) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+    await Question.findByIdAndDelete(questionId);
+    return  res.status(200).json({
+      success: true,
+      message: "Question deleted successfully",
+    });
   } catch (error) {
     return next(error);
   }

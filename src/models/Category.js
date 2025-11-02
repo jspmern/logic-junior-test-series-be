@@ -2,15 +2,17 @@ const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
     name: {
+        //TODO:before uncommenting required and unique, make sure to handle existing data
         type: String,
-        required: [true, 'Category name is required'],
+       // required: [true, 'Category name is required'],
         trim: true,
-        unique: true
+        //unique: true
     },
     slug: {
         type: String,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        index: true
     },
     description: {
         type: String,
