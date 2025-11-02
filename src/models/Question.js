@@ -13,6 +13,11 @@ const questionSchema = new mongoose.Schema(
       ref: "Course",
       required: true,
     },
+    userId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     questionText: { type: String, trim: true },
     questionImage: { type: String, trim: true }, // optional
     options: {
@@ -38,5 +43,7 @@ const questionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+questionSchema.index({ courseId: 1 });
+questionSchema.index({ difficulty: 1 });
 
 module.exports = mongoose.model("Question", questionSchema);

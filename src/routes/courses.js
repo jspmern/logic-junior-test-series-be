@@ -1,10 +1,12 @@
-const upload = require("../config/multer");
+
 const cache = require("../middleware/cacheMiddleware");
 const { createCourseController, getCourseByIdController, updateCourseController, deleteCourseController, getAllCourseController, uploadThumbnailController } = require("../controller/courseController");
 const { createCoureseValidationRule, getCourseByIdValidationRule, updateCourseValidationRule, deleteCourseValidationRule } = require("../validator/courseValidator");
 
 const express=require('express');
+const createUpload = require("../config/multer");
 const router=express.Router();
+const upload = createUpload("courses");
 
 /**
  * @openapi
