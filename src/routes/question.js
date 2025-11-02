@@ -18,13 +18,156 @@ const {
 } = require('../validator/questionValidator');
 const createUpload = require('../config/multer');
 const router = express.Router();
-
-// -------------------------
-//  Default Question Routes
-// -------------------------
+/**
+ * @swagger
+ * /api/questions:
+ *   get:
+ *     summary: Get questions for a course (paged)
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: query
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID to filter questions by
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Results per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Text to search in question text or tags
+ *       - in: query
+ *         name: difficulty
+ *         schema:
+ *           type: string
+ *           enum: [easy, medium, hard]
+ *         description: Filter by difficulty
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [latest, oldest, mostPopular]
+ *         description: Sort option
+ *     responses:
+ *       200:
+ *         description: Paginated list of questions
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               page: 1
+ *               totalPages: 5
+ *               totalResults: 45
+ *               data:
+ *                 - _id: "6523e1a..."
+ *                   questionText: "What is React?"
+ *                   difficulty: "easy"
+ *       400:
+ *         description: Validation failed / missing courseId
+ */
 router.get('/',getSingleQuestionValidationRules, getAllQuestionController);
 
+/**
+ * @swagger
+ * /api/questions:
+ *   post:
+ *     summary: Create a new question
+ *     tags: [Questions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               questionText:
+ *                 type: string
+ *               questionImage:
+ *                 type: string
+ *               options:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     text:
+ *                       type: string
+ *                     image:
+ *                       type: string
+ *                     isCorrect:
+ *                       type: boolean
+ *               explanation:
+ *                 type: object
+ *                 properties:
+ *                   text:
+ *                     type: string
+ *                   image:
+ *                     type: string
+ *               userId:
+ *                 type: string
+ *               courseId:
+ *                 type: string
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               marks:
+ *                 type: number
+ *               negativeMarks:
+ *                 type: number
+ *               difficulty:
+ *                 type: string
+ *                 enum: [easy, medium, hard]
+ *     responses:
+ *       201:
+ *         description: Question created successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Question created successfully"
+ *               data:
+ *                 _id: "6523e1a..."
+ *                 questionText: "Sample question"
+ *       400:
+ *         description: Validation failed
+ */
 router.post('/', createQuestionValidationRules, createQuestionController);
+/**
+ * @swagger
+ * /api/questions/{id}:
+ *   delete:
+ *     summary: Delete a question by ID
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Question ID to delete
+ *     responses:
+ *       200:
+ *         description: Question deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Question deleted successfully"
+ *       404:
+ *         description: Question not found
+ */
 router.delete('/:id', deleteQuestionValidationRules, deleteQuestionController);
 
 /**
