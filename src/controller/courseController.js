@@ -107,6 +107,7 @@ const { clearCacheByPrefix } = require("../utilis/cacheKey");
             error.status = 404;
             return next(error);
           }
+           await clearCacheByPrefix("courses");
           res.status(200).json({ success: true, message: "Course updated successfully", data: updatedCourse });
     }
     catch(error){
@@ -128,6 +129,7 @@ const { clearCacheByPrefix } = require("../utilis/cacheKey");
         error.status = 404;
         return next(error);
       }
+       await clearCacheByPrefix("courses");
       res.status(200).json({ success: true, message: "Course deleted successfully", data: deletedCourse });
     }
     catch(error){
