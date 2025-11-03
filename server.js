@@ -12,6 +12,7 @@ const categoryRoute=require('./src/routes/categories');
 const courseRoute=require('./src/routes/courses');
 const questionRoute=require('./src/routes/question');
 const errorHandler = require('./src/middleware/errorHandler');
+const resultRoute=require('./src/routes/result');
 const PORT=process.env.PORT || 5000;
 const app=express();
 app.use(express.json());
@@ -37,6 +38,7 @@ app.use('/api/auth',authRoute);
 app.use('/api/categories',categoryRoute);
 app.use('/api/courses',courseRoute);
 app.use('/api/questions',questionRoute);
+app.use('/api/results',resultRoute);
 
 app.use(errorHandler)
 
